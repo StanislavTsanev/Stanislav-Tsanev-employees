@@ -1,6 +1,9 @@
 <div style="padding: 20px;">
     <h2>Upload CSV</h2>
-    <input type="file" (change)="onFileSelected($event)" />
+    <input type="file" (change)="onFileSelected($event)" accept=".csv"/>
+  <div *ngIf="error" style="color: red; margin-top: 10px;">
+    {{ error }}
+  </div>
   
     <table mat-table [dataSource]="results" style="margin-top: 20px; width: 100%;">
   

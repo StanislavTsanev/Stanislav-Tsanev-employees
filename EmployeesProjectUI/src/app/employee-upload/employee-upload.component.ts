@@ -12,6 +12,7 @@ import { MatTableModule } from '@angular/material/table';
 export class EmployeeUploadComponent {
   results: any[] = [];
   displayedColumns = ['empID1', 'empID2', 'projectID', 'daysWorked'];
+  error: string | null = null;
 
   constructor(private http: HttpClient) {}
 
@@ -19,10 +20,24 @@ export class EmployeeUploadComponent {
     const file = event.target.files[0];
     if (!file) return;
 
+    if(file.type !== "text/csv"){
+      this.error = "Please upload a valid CSV file.";
+      return;
+    }
+
     const formData = new FormData();
     formData.append('file', file);
 
     this.http.post<any[]>('https://localhost:7168/api/employee/upload', formData)
-      .subscribe((data) => this.results = data);
+      .subscribe({
+        next: (data) => {
+          this.results = data;
+          this.error = null;
+        },
+        error: (err) => {
+          console.error('Upload failed:', err);
+          this.error = 'Failed to upload file. Please try again.';
+        }
+      });
   }
 }
